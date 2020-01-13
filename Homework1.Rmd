@@ -1,0 +1,12 @@
+---
+title: "Homework 1"
+author: "Yi Zuo"
+date: "`r date()`"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
