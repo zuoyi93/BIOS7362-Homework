@@ -127,7 +127,7 @@ lines(x=x_grid, y=lin_pred_l2,col="red")
 lines(x=x_grid, y=lin_pred_l1,col="brown")
 lines(x=x_grid, y=lin_pred_t_0.25,col="blue")
 lines(x=x_grid, y=lin_pred_t_0.75,col="green")
-legend("bottomright",legend=c("L2 loss","L1 loss","Tilted 0.25", "Tilted 0.75"),col=c("red","brown","blue","green"),cex=0.5,lty=1)
+legend("bottomright",legend=c("L2 loss","L1 loss","Tilted 0.25", "Tilted 0.75"),col=c("red","brown","blue","green"),cex=0.8,lty=1)
 
 ```
 
@@ -230,7 +230,7 @@ lines(x=x_grid, y=nlin_pred_l2,col="red")
 lines(x=x_grid, y=nlin_pred_l1,col="brown")
 lines(x=x_grid, y=nlin_pred_t_0.25,col="blue")
 lines(x=x_grid, y=nlin_pred_t_0.75,col="green")
-legend("bottomright",legend=c("L2 loss","L1 loss","Tilted 0.25", "Tilted 0.75"),col=c("red","brown","blue","green"),cex=0.5,lty=1)
+legend("bottomright",legend=c("L2 loss","L1 loss","Tilted 0.25", "Tilted 0.75"),col=c("red","brown","blue","green"),cex=0.8,lty=1)
 
 ```
 
