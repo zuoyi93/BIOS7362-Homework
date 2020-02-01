@@ -1,3 +1,13 @@
+    knitr::opts_chunk$set(echo = TRUE)
+
+    library('ElemStatLearn')
+
+    ## load prostate data
+    data("prostate")
+
+    ## subset to training examples
+    prostate_train <- subset(prostate, train==TRUE)
+
 Using the RMarkdown/knitr/github mechanism, implement the following
 tasks by extending the example R script (prostate-data-lin.R):
 

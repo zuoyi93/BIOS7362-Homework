@@ -5,7 +5,7 @@ date: "`r date()`"
 output: md_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup,message=F}
 knitr::opts_chunk$set(echo = TRUE)
 
 library('ElemStatLearn')
@@ -14,7 +14,7 @@ library('ElemStatLearn')
 data("prostate")
 
 ## subset to training examples
-prostate_train <- subset(prostate, train=TRUE)
+prostate_train <- subset(prostate, train==TRUE)
 
 ```
 

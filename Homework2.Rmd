@@ -1,0 +1,63 @@
+---
+title: "Homework 2"
+author: "Yi Zuo"
+date: "`r date()`"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+Using the RMarkdown/knitr/github mechanism, implement the following tasks by extending the example R script (prostate-data-lin.R):  
+
+* Use the prostate cancer data from the `ElemStatLearn` package for R.
+
+```{r}
+library('ElemStatLearn')
+
+## load prostate data
+data("prostate")
+
+## subset to training examples
+prostate_train <- subset(prostate,train==T)
+prostate_test <- subset(prostate,train==F)
+
+```
+
+* Use the `cor` function to reproduce the correlations listed in HTF Table 3.1 page 50
+
+```{r}
+round(cor(prostate_train[,1:(ncol(prostate)-1)]),3)
+```
+
+* Treat `lpsa` as the outcome, and use all other variables in the data set as predictors  
+
+* With the training subset, train a least-squares regression model with all predictors using the `lm` function (with the training subset)  
+
+```{r}
+ls <- lm(lpsa~.,data=prostate_train[,-ncol(prostate_train)])
+
+```
+
+* Use the testing subset to compute the test error using the fitted least-squares regression model  
+
+The test error for each observation in the test set is stored in `te`.  
+
+```{r}
+te <- prostate_test$lpsa - predict(ls,newdata=prostate_test[,c(-9,-10)])
+te
+```
+
+# Train a ridge regression model using the `glmnet` function, and tune the value of `lambda`  
+
+```{r}
+library(glmnet)
+
+
+
+```
+
+
+
