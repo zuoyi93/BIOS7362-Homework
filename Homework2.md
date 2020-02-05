@@ -66,7 +66,7 @@ Train a ridge regression model using the `glmnet` function, and tune the value o
     form  <- lpsa ~  0 + lcavol+ lweight + age + lbph + lcp + pgg45 + svi + gleason
     x_inp <- model.matrix(form, data=prostate_train)
     y_out <- prostate_train$lpsa
-    fit <- glmnet(x=x_inp, y=y_out, lambda=seq(0.5, 0, -0.05),alpha=0)
+    fit <- glmnet(x=x_inp, y=y_out, lambda=seq(2, 0, -0.05),alpha=0)
 
     ## functions to compute testing/training error w/lm
     L2_loss <- function(y, yhat) (y-yhat)^2
@@ -80,13 +80,13 @@ Train a ridge regression model using the `glmnet` function, and tune the value o
     }
 
     ## set a range of lambda
-    lambda.set <- seq(0,1,0.001)
+    lambda.set <- seq(0,2,0.01)
 
     index <- which.min(sapply(lambda.set,function(x) error(prostate_test, fit, lam=x, form=form)))
 
     cat("The $\\lambda$ that minimizes the test error is",lambda.set[index],".")
 
-    ## The $\lambda$ that minimizes the test error is 0.214 .
+    ## The $\lambda$ that minimizes the test error is 0.21 .
 
 Create a path diagram of the ridge regression analysis
 ======================================================
