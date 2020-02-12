@@ -1,0 +1,168 @@
+-   Goal: Understand and implement reduced rank LDA in R.
+
+-   Due: Before class Wed. 2/19.
+
+Using the RMarkdown/knitr/github mechanism, implement the following
+tasks:
+
+-   Retrieve the vowel data (training and testing) from the HTF website
+    or R package.
+
+<!-- -->
+
+    library('ElemStatLearn')
+
+    ## read vowel training and testing data from HTF website
+    data(vowel.train)
+    data(vowel.test)
+
+-   Review the class notes and HTF section 4.3.3.
+
+-   Implement reduced-rank LDA using the vowel training data. Check your
+    work by plotting the first two discriminant variables as in HTF
+    Figure 4.4.  
+    Hint: Center the 10 training predictors before implementing LDA. See
+    built-in R function 'scale'. The singular value or Eigen
+    decompositions may be computed using the built-in R functions ’svd’
+    or ’eigen’, respectively.
+
+<!-- -->
+
+    reduced_rank_LDA = function( XTrain, yTrain, XTest, yTest ){
+
+      K = length(unique(yTrain)) # the number of classes (expect the classes to be labeled 1, 2, 3, ..., K-1, K 
+      N = dim( XTrain )[1] # the number of samples
+      p = dim( XTrain )[2] # the number of features
+      
+      # Compute the class dependent probabilities and class dependent centroids: 
+      #
+      PiK = matrix( data=0, nrow=K, ncol=1 )
+      M = matrix( data=0, nrow=K, ncol=p )
+      ScatterMatrices = list()
+      for( ci in 1:K ){
+        inds = yTrain == ci
+        Nci = sum(inds)
+        PiK[ci] = Nci/N
+        M[ci,] = t( as.matrix( apply( XTrain[ inds, ],2,mean ) ) )
+      }
+
+      # Compute W:
+      #
+      W = cov( XTrain ) 
+
+      # Compute M^* = M W^{-1/2} using the eigen-decomposition of W :
+      #
+      e = eigen(W)
+      V = e$vectors # W = V %*% diag(e$values) %*% t(V)
+      W_Minus_One_Half = V %*% diag( 1./sqrt(e$values) ) %*% t(V) 
+      MStar = M %*% W_Minus_One_Half 
+
+      # Compute B^* the covariance matrix of M^* and its eigen-decomposition:
+      #
+      BStar = cov( MStar )
+      e = eigen(BStar)
+      VStar = - e$vectors # note taking the negative to match the results in the book (results are independent of this)
+
+      V = W_Minus_One_Half %*% VStar # the full projection matrix
+      
+      # Project the data into the invariant subspaces:
+      #
+      XTrainProjected = t( t(V) %*% t(XTrain) )
+      XTestProjected = t( t(V) %*% t(XTest) )
+      MProjected = t( t(V) %*% t(M) ) # the centroids projected
+
+      # Classify the training/testing data for each possible projection dimension:
+      # 
+      TrainClassification = matrix( data=0, nrow=N, ncol=p ) # number of samples x number of projection dimensions 
+
+      discriminant = matrix( data=0, nrow=1, ncol=K )
+      for( si in 1:N ){ # for each sample
+          for( pi in 1:p ){ # for each projection dimension 
+          for( ci in 1:K ){ # for each class centroid 
+              discriminant[ci] = 0.5 * sum( ( XTrainProjected[si,1:pi] - MProjected[ci,1:pi] )^2 ) - log( PiK[ci] )
+          }
+              TrainClassification[si,pi] = which.min( discriminant )
+          }
+      } 
+
+      N = dim(XTest)[1]
+      TestClassification = matrix( data=0, nrow=N, ncol=p ) # number of samples x number of projection dimensions 
+
+      discriminant = matrix( data=0, nrow=1, ncol=K )
+      for( si in 1:N ){ # for each sample 
+          for( pi in 1:p ){ # for each projection dimension 
+          for( ci in 1:K ){ # for each class centroid
+              discriminant[ci] = 0.5 * sum( ( XTestProjected[si,1:pi] - MProjected[ci,1:pi] )^2 ) - log( PiK[ci] )
+          }
+              TestClassification[si,pi] = which.min( discriminant )
+          }
+      } 
+      
+      return( list(XTrainProjected,XTestProjected,MProjected,TrainClassification,TestClassification) )
+
+    }
+
+    XTrain <- vowel.train[,-1]
+    yTrain <- vowel.train[,1]
+    XTest <- vowel.test[,-1]
+    yTest <- vowel.test[,1]
+
+    out = reduced_rank_LDA( XTrain, yTrain, XTest, yTest )
+
+    K = length(unique(yTrain)) # the number of classes (expect the classes to be labeled 1, 2, 3, ..., K-1, K 
+
+    XTProj = out[[1]]
+    MSProj = out[[3]]
+
+    plot_colors = c("black","blue","brown","purple","orange","cyan","gray","yellow","black","red","green")
+    for( ci in 1:K ){
+        inds = yTrain == ci
+        if( ci==1 ){
+            plot( XTProj[inds,1], XTProj[inds,2], xlab="Coordinate 1 for Training Data", ylab="Coordinate 2 for Training Data", col=plot_colors[ci], type="p", xlim=range(XTProj[,1]), ylim=range(XTProj[,2]) )       
+        lines( MSProj[ci,1], MSProj[ci,2], col=plot_colors[ci], type="p", cex=10, pch="." )
+        }else{
+            lines( XTProj[inds,1], XTProj[inds,2], xlab="Coordinate 1 for Training Data", ylab="Coordinate 2 for Training Data", col=plot_colors[ci], type="p" )
+        lines( MSProj[ci,1], MSProj[ci,2], col=plot_colors[ci], type="p", cex=10, pch="." )    
+        }
+    }
+
+![](Homework3_files/figure-markdown_strict/recreate%20the%20plot%204.4-1.png)
+
+-   Use the vowel testing data to estimate the expected prediciton error
+    (assuming zero-one loss), varying the number of canonical variables
+    used for classification.
+
+<!-- -->
+
+    K = length(unique(yTrain)) # the number of classes (expect the classes to be labeled 1, 2, 3, ..., K-1, K 
+    p = dim( XTrain )[2] # the number of features
+
+    TrainClassification = out[[4]]
+    TestClassification = out[[5]]
+
+    train_error_rate = matrix( data=0, nrow=1, ncol=p )
+    test_error_rate = matrix( data=0, nrow=1, ncol=p )
+
+    NTrain = dim(XTrain)[1]
+    NTest = dim(XTest)[1]
+
+    for( pi in 1:p ){
+       train_error_rate[pi] = sum( TrainClassification[,pi] != yTrain )/NTrain
+       test_error_rate[pi] = sum( TestClassification[,pi] != yTest )/NTest
+    }
+
+-   Plot the EPE as a function of the number of discriminant variables,
+    and compare this with HTF Figure 4.10.
+
+<!-- -->
+
+    plot( 1:p, train_error_rate, col="red", ylim=c( 0.3, 0.7 ), type="b", xlab="Dimension", ylab="Misclassification rate" ) # range( c(train_error_rate,test_error_rate) )
+    lines( 1:p, test_error_rate, col="blue", type="b" )
+
+![](Homework3_files/figure-markdown_strict/recreate%20figure%204.10-1.png)
+
+**Acknowledgement**
+
+I found the code on
+<https://waxworksmath.com/Authors/G_M/Hastie/WWW/chapter_4.html> very
+helpful in doing this homework.
