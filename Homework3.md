@@ -29,13 +29,15 @@ tasks:
 <!-- -->
 
     reduced_rank_LDA = function( XTrain, yTrain, XTest, yTest ){
-
-      K = length(unique(yTrain)) # the number of classes (expect the classes to be labeled 1, 2, 3, ..., K-1, K 
-      N = dim( XTrain )[1] # the number of samples
-      p = dim( XTrain )[2] # the number of features
+      
+      # the number of classes 
+      K = length(unique(yTrain)) 
+      # the number of samples
+      N = dim( XTrain )[1] 
+      # the number of features
+      p = dim( XTrain )[2] 
       
       # Compute the class dependent probabilities and class dependent centroids: 
-      #
       PiK = matrix( data=0, nrow=K, ncol=1 )
       M = matrix( data=0, nrow=K, ncol=p )
       ScatterMatrices = list()
@@ -47,38 +49,37 @@ tasks:
       }
 
       # Compute W:
-      #
       W = cov( XTrain ) 
 
       # Compute M^* = M W^{-1/2} using the eigen-decomposition of W :
-      #
       e = eigen(W)
-      V = e$vectors # W = V %*% diag(e$values) %*% t(V)
+      
+      # W = V %*% diag(e$values) %*% t(V)
+      V = e$vectors 
       W_Minus_One_Half = V %*% diag( 1./sqrt(e$values) ) %*% t(V) 
       MStar = M %*% W_Minus_One_Half 
 
       # Compute B^* the covariance matrix of M^* and its eigen-decomposition:
-      #
       BStar = cov( MStar )
       e = eigen(BStar)
-      VStar = - e$vectors # note taking the negative to match the results in the book (results are independent of this)
+      VStar = - e$vectors 
 
-      V = W_Minus_One_Half %*% VStar # the full projection matrix
+      # the full projection matrix
+      V = W_Minus_One_Half %*% VStar 
       
       # Project the data into the invariant subspaces:
-      #
       XTrainProjected = t( t(V) %*% t(XTrain) )
       XTestProjected = t( t(V) %*% t(XTest) )
-      MProjected = t( t(V) %*% t(M) ) # the centroids projected
+      # the centroids projected
+      MProjected = t( t(V) %*% t(M) ) 
 
       # Classify the training/testing data for each possible projection dimension:
-      # 
-      TrainClassification = matrix( data=0, nrow=N, ncol=p ) # number of samples x number of projection dimensions 
+      TrainClassification = matrix( data=0, nrow=N, ncol=p ) 
 
       discriminant = matrix( data=0, nrow=1, ncol=K )
-      for( si in 1:N ){ # for each sample
-          for( pi in 1:p ){ # for each projection dimension 
-          for( ci in 1:K ){ # for each class centroid 
+      for( si in 1:N ){ 
+          for( pi in 1:p ){ 
+          for( ci in 1:K ){ 
               discriminant[ci] = 0.5 * sum( ( XTrainProjected[si,1:pi] - MProjected[ci,1:pi] )^2 ) - log( PiK[ci] )
           }
               TrainClassification[si,pi] = which.min( discriminant )
@@ -86,12 +87,13 @@ tasks:
       } 
 
       N = dim(XTest)[1]
-      TestClassification = matrix( data=0, nrow=N, ncol=p ) # number of samples x number of projection dimensions 
+      
+      TestClassification = matrix( data=0, nrow=N, ncol=p ) 
 
       discriminant = matrix( data=0, nrow=1, ncol=K )
-      for( si in 1:N ){ # for each sample 
-          for( pi in 1:p ){ # for each projection dimension 
-          for( ci in 1:K ){ # for each class centroid
+      for( si in 1:N ){ 
+          for( pi in 1:p ){ 
+          for( ci in 1:K ){ 
               discriminant[ci] = 0.5 * sum( ( XTestProjected[si,1:pi] - MProjected[ci,1:pi] )^2 ) - log( PiK[ci] )
           }
               TestClassification[si,pi] = which.min( discriminant )
@@ -109,7 +111,7 @@ tasks:
 
     out = reduced_rank_LDA( XTrain, yTrain, XTest, yTest )
 
-    K = length(unique(yTrain)) # the number of classes (expect the classes to be labeled 1, 2, 3, ..., K-1, K 
+    K = length(unique(yTrain)) 
 
     XTProj = out[[1]]
     MSProj = out[[3]]
@@ -134,8 +136,7 @@ tasks:
 
 <!-- -->
 
-    K = length(unique(yTrain)) # the number of classes (expect the classes to be labeled 1, 2, 3, ..., K-1, K 
-    p = dim( XTrain )[2] # the number of features
+    p = dim( XTrain )[2] 
 
     TrainClassification = out[[4]]
     TestClassification = out[[5]]
@@ -156,7 +157,7 @@ tasks:
 
 <!-- -->
 
-    plot( 1:p, train_error_rate, col="red", ylim=c( 0.3, 0.7 ), type="b", xlab="Dimension", ylab="Misclassification rate" ) # range( c(train_error_rate,test_error_rate) )
+    plot( 1:p, train_error_rate, col="red", ylim=c( 0.3, 0.7 ), type="b", xlab="Dimension", ylab="Misclassification rate" ) 
     lines( 1:p, test_error_rate, col="blue", type="b" )
 
 ![](Homework3_files/figure-markdown_strict/recreate%20figure%204.10-1.png)
