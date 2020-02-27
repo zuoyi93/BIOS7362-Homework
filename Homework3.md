@@ -104,9 +104,9 @@ tasks:
 
     }
 
-    XTrain <- vowel.train[,-1]
+    XTrain <- scale(vowel.train[,-1],center=T,scale=F)
     yTrain <- vowel.train[,1]
-    XTest <- vowel.test[,-1]
+    XTest <- scale(vowel.test[,-1],center=T,scale=F)
     yTest <- vowel.test[,1]
 
     out = reduced_rank_LDA( XTrain, yTrain, XTest, yTest )
