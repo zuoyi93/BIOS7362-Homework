@@ -50,7 +50,7 @@ tasks:
 
       # Compute W:
       W = cov( XTrain ) 
-
+      
       # Compute M^* = M W^{-1/2} using the eigen-decomposition of W :
       e = eigen(W)
       
@@ -105,8 +105,15 @@ tasks:
     }
 
     XTrain <- scale(vowel.train[,-1],center=T,scale=F)
+    means  = attributes(XTrain)$"scaled:center"
+    # stds   = attributes(XTrain)$"scaled:scale"
+
     yTrain <- vowel.train[,1]
-    XTest <- scale(vowel.test[,-1],center=T,scale=F)
+
+    XTest <- vowel.test[,-1]
+    XTest = t( apply( XTest, 1, '-', means ) ) 
+    # XTest = t( apply( XTest, 1, '/', stds ) ) 
+
     yTest <- vowel.test[,1]
 
     out = reduced_rank_LDA( XTrain, yTrain, XTest, yTest )
