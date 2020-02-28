@@ -11,6 +11,18 @@ tasks:
 <!-- -->
 
     library('ElemStatLearn')
+    library('dplyr')
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
 
     ## read vowel training and testing data from HTF website
     data(vowel.train)
@@ -49,7 +61,16 @@ tasks:
       }
 
       # Compute W:
-      W = cov( XTrain ) 
+      # W = cov( XTrain ) 
+      training.data <- data.frame(cbind(XTrain,yTrain))
+      
+      W <- training.data %>% 
+        group_by(yTrain) %>%
+        mutate_all(funs(. - mean(.))) %>%
+        ungroup %>%
+        dplyr::select(-yTrain) %>%
+        cov()
+      
       
       # Compute M^* = M W^{-1/2} using the eigen-decomposition of W :
       e = eigen(W)
@@ -116,12 +137,22 @@ tasks:
 
     yTest <- vowel.test[,1]
 
-    out = reduced_rank_LDA( XTrain, yTrain, XTest, yTest )
+    out = suppressWarnings(reduced_rank_LDA( XTrain, yTrain, XTest, yTest ))
+
+    ## `mutate_all()` ignored the following grouping variables:
+    ## Column `yTrain`
+    ## Use `mutate_at(df, vars(-group_cols()), myoperation)` to silence the message.
 
     K = length(unique(yTrain)) 
 
+    # original XTProj = -out[[1]]
+
     XTProj = out[[1]]
     MSProj = out[[3]]
+
+    XTProj[,2] <- -XTProj[,2] 
+    MSProj[,2] <- -MSProj[,2] 
+
 
     plot_colors = c("black","blue","brown","purple","orange","cyan","gray","yellow","black","red","green")
     for( ci in 1:K ){
