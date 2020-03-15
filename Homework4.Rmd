@@ -2,7 +2,7 @@
 title: "Homework 4"
 author: "Yi Zuo"
 date: "`r date()`"
-output: md_document
+output: html_document
 ---
 
 ```{r setup, include=FALSE}
@@ -13,9 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 * Review HTF sections 7.10 and 7.11  
 
 
-* Consider a 1-nearest neighbor classifier applied to a two-class classification problem, where the marginal probability associated with either class is one half, and where the distribution of a univariate predictor is standard normal, independent of class (i.e., not a very good predictor). Do the following:
+* Consider a 1-nearest neighbor classifier applied to a two-class classification problem, where the marginal probability associated with either class is one half, and where the distribution of a univariate predictor is standard normal, independent of class (i.e., not a very good predictor). Do the following:   
 
-    + Show that the expected prediction error (EPE; HTF expression 7.3) is equal to 0.5.  
+
+> Show that the expected prediction error (EPE; HTF expression 7.3) is equal to 0.5.  
+
 
 $$
 \begin{aligned}
@@ -27,9 +29,9 @@ Err&=E[L(Y,\hat f(X))]\\
 $$
 
 
+> Show that $E_z[\hat{\text{Err}}_{\text{boot}}]$ (expectation of HTF expression 7.54) is approximately equal to 0.184, where $z$ represents the training sample of $N$ class and predictor pairs. Thus, demonstrate that the bootstrap estimate of EPE is optimistic.  
     
-    + Show that $E_z[\hat{\text{Err}}_{\text{boot}}]$ (expectation of HTF expression 7.54) is approximately equal to 0.184, where $z$ represents the training sample of $N$ class and predictor pairs. Thus, demonstrate that the bootstrap estimate of EPE is optimistic.  
-    
+
 
 $$
 \begin{aligned}
@@ -41,8 +43,8 @@ E_z[\hat{\text{Err}}_{\text{boot}}]&=Pr\{\text{observation } i\in \text{bootstra
 \end{aligned}
 $$   
    
-    
-    + Compute or approximate $E_z[\hat{\text{Err}}^{(1)}]$ (expectation of HTF expression 7.56).  
+> Compute or approximate $E_z[\hat{\text{Err}}^{(1)}]$ (expectation of HTF expression 7.56).  
+
 
 $$
 \begin{aligned}
@@ -54,8 +56,8 @@ E_z[\hat{\text{Err}}^{(1)}]&=E(\frac{1}{N}\sum_{i=1}^N\frac{1}{|C^{-i}|}\sum_{b\
 $$ 
 
 
-    
-    + Compute or approximate $E_z[\hat{\text{Err}}^{(0.632)}]$ (expectation of HTF expression 7.57)
+> Compute or approximate $E_z[\hat{\text{Err}}^{(0.632)}]$ (expectation of HTF expression 7.57)
+
 
 
 $$E_z[\hat{\text{Err}}^{(0.632)}]=0.368 *E[ \overline{\text{err}}]+0.632 * E[ \hat{\text{Err}}^{(1)}]=0.368*0+0.632*0.5=0.316 $$
