@@ -2,7 +2,7 @@
 title: "Homework 4"
 author: "Yi Zuo"
 date: "`r date()`"
-output: html_document
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
