@@ -33,6 +33,9 @@ E\_z\[\\hat{\\text{Err}}\_{\\text{boot}}\]&=Pr\\{\\text{observation } i\\in \\te
 \\end{aligned}
 $$
 
+Since $E\_z\[\\hat{\\text{Err}}\_{\\text{boot}}\]$ is 0.184, which is
+below 0.5, we can see that the bootstrap estimate of EPE is optimistic.
+
 > Compute or approximate $E\_z\[\\hat{\\text{Err}}^{(1)}\]$ (expectation
 > of HTF expression 7.56).
 
