@@ -12,7 +12,7 @@
 $$
 \\begin{aligned}
 Err&=E\[L(Y,\\hat f(X))\]\\\\
-&=Pr\\{Y\\neq \\hat f(X)\\}L(Y,\\hat f(X)|Y\\neq \\hat f(X))+ Pr\\{Y\\neq \\hat f(X)\\}L(Y,\\hat f(X)|Y\\neq \\hat f(X))  \\\\
+&=Pr\\{Y\\neq \\hat f(X)\\}L(Y,\\hat f(X)|Y\\neq \\hat f(X))+ Pr\\{Y= \\hat f(X)\\}L(Y,\\hat f(X)|Y= \\hat f(X))  \\\\
 &=\\frac{1}{2}\*1+\\frac{1}{2}\*0\\\\
 &=\\frac{1}{2}
 \\end{aligned}
