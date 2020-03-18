@@ -48,6 +48,34 @@ E\_z\[\\hat{\\text{Err}}^{(1)}\]&=E(\\frac{1}{N}\\sum\_{i=1}^N\\frac{1}{|C^{-i}|
 \\end{aligned}
 $$
 
+Alternatively, we can show this in simulation.
+
+    n=100
+    B=1000
+
+    # create training set and test set
+    train.d <- data.frame(id=1:n,x=rnorm(n),y=rbinom(n,1,0.5))
+    test.d <- data.frame(x=rnorm(n),y=rbinom(n,1,0.5))
+
+    # function to calculate the take-one-out error rate
+    each.f <- function(i,data){
+      
+      d <- data[data$id != i,]
+      model <- knnreg(y ~ x, k=1,data=d)
+      rate <- sum(predict(model,test.d)!= test.d$y)/n
+      return(rate)
+      
+    }
+
+    # function for one time sim on all n observations
+    one.time <- function(){
+      index <- sample(1:n,n,replace=T)
+      mean(sapply(1:n,function(x) each.f(x,train.d[index,])))
+    }  
+
+    # repeat B times to get the estimated error rate
+    mean(replicate(B,one.time() )) # 0.502
+
 > Compute or approximate $E\_z\[\\hat{\\text{Err}}^{(0.632)}\]$
 > (expectation of HTF expression 7.57)
 
