@@ -89,7 +89,7 @@ one.time <- function(){
 }  
 
 # repeat B times to get the estimated error rate
-mean(replicate(B,one.time() )) # 0.502
+mean(replicate(B,one.time() )) # 0.512
 
 ```
 
