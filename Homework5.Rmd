@@ -1,0 +1,65 @@
+---
+title: "Homework 5"
+author: "Yi Zuo"
+date: "`r date()`"
+output: md_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+
+```
+
+* Complete HTF exercise Ex. 15.4  
+
+> Suppose $x_i$, $i = 1,...,N$ are iid ($\mu$, $\sigma^2$). Let $\bar x_1^*$ and $\bar x_2^*$ be two bootstrap realizations of the sample mean. Show that the sampling correlation corr($\bar x_1^*$,$\bar x_2^*$) = $\frac{n}{2n-1}$ $\approx$ 50\%. Along the way, derive var($\bar x_1^*$) and the variance of the bagged mean $\bar x_{\text{bag}}$. Here $\bar x$ is a *linear statistic*; bagging produces no reduction in variance for linear statistics.    
+
+
+Let $x_i^k$ be sample $i$ from the $k$th bootstrap.  
+
+We know that  
+
+$$E(x_i^k)=\mu, Var(x_i^k)=\sigma^2 $$
+
+$$
+\begin{aligned}
+Cov(x_i^k,x_j^k)&=Cov(x_i^k,x_j^m), \text{ where } i\neq j, k\neq m \\
+&=E((x_i^k-\mu)(x_j^m-\mu)) \\
+&=E(x_i^kx_j^m)-\mu E(x_i^k)-\mu E(x_j^m)+\mu^2\\
+&=E(\bar x^2)-\mu^2\\
+&=(E(\bar x))^2+Var(\bar x)-\mu^2\\
+&=\frac{\sigma^2}{n}
+\end{aligned}
+$$
+
+$$Cov(\bar x_1^*,\bar x_2^*)=\frac{1}{n^2}Cov(\sum_{i=1}^n x_i^1,\sum_{j=1}^n x_j^2)=\frac{1}{n^2}n^2\frac{\sigma^2}{n}=\frac{\sigma^2}{n} $$
+
+
+$$Var(\bar x_1^*)=Var(\frac{\sum_{i=1}^n x^1_i}{n})=\frac{\sum_{i=1}^n Var(x_i^1)+2\frac{n(n-1)}{2}Cov(x_1^1,x_2^1) }{n^2}=\frac{n\sigma^2+n(n-1)\sigma^2/n}{n^2}=\frac{(2n-1)\sigma^2}{n^2} $$
+
+$$
+\begin{aligned}
+cor(\bar x_1^*,\bar x_2^*)&=\frac{Cov(\bar x_1^*,\bar x_2^*)}{\sqrt{Var(\bar x_1^*)Var(\bar x_2^*)}}\\
+&=\frac{\sigma^2/n}{(2n-1)\sigma^2/n^2}\\
+&=\frac{n}{2n-1}
+\end{aligned}
+$$
+
+Hence,  
+
+$$
+\begin{aligned}
+Var(\bar x_{\text{bag}})&=Var(\frac{\bar x_1^*+\bar x_2^*}{2}) \\
+&=\frac{Var(\bar x_1^*)+Var(\bar x_2^*)+2Cov(\bar x_1^*,\bar x_2^*)}{4} \\
+&=\frac{(2n-1)\sigma^2/n^2+(2n-1)\sigma^2/n^2+2\sigma^2/n }{4}\\
+&=\frac{3n-1}{2n^2}\sigma^2
+\end{aligned}
+$$
+
+Since $Var(\bar x_1^*)>\frac{\sigma^2}{n}$, and $Var(\bar x_{\text{bag}})>\frac{\sigma^2}{n}$, we know that bagging produces no reduction in variance for linear statistics.  
+
+
+
+
+
